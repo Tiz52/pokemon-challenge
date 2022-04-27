@@ -1,12 +1,12 @@
 import {GetStaticProps, GetStaticPaths, NextPage} from "next";
 
-import {PageLayout} from "../../../components/layout";
-import {PokemonDetails} from "../../../components/pokemons";
+import {PokemonDetails} from "../../components/pokemons";
 
-import {baseUrl} from "../../../services/settings";
-import {PokemonListResponse} from "../../../interfaces/pokemon-list";
-import {getPokemonFullDetails} from "../../../services/getPokemonFullDetails";
-import {Pokemon} from "../../../interfaces/pokemon-full";
+import {baseUrl} from "../../services/settings";
+import {PokemonListResponse} from "../../interfaces/pokemon-list";
+import {getPokemonFullDetails} from "../../services/getPokemonFullDetails";
+import {Pokemon} from "../../interfaces/pokemon-full";
+import {PageLayout} from "../../components/layout";
 
 interface Props {
   pokemon: Pokemon;

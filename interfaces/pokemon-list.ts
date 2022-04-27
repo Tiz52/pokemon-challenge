@@ -10,3 +10,14 @@ export interface SmallPokemon {
   id: number;
   img: string;
 }
+
+export interface PokemonFromDB {
+  name: string;
+  img: string;
+  abilities: string[];
+  height: number;
+  id: number;
+  evolutions: string[];
+  description: string;
+  weight: number;
+}

@@ -34,8 +34,8 @@ export const PokemonCard: FC<Props> = ({pokemon, fromApi}) => {
   const {name, id, img} = pokemon;
 
   const onClick = () => {
-    if (fromApi) return router.push(`/pokeapi/name/${pokemon.name}`);
-    router.push(`/pokedex/name/${pokemon.name}`);
+    if (fromApi) return router.push(`/pokeapi/${pokemon.name}`);
+    router.push(`/pokedex/${pokemon.name}`);
   };
 
   return (
