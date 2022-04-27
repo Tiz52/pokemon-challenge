@@ -4,7 +4,7 @@ import {FC} from "react";
 import {SmallPokemon} from "../../interfaces";
 
 interface Props {
-  pokemon: SmallPokemon | null;
+  pokemon: SmallPokemon | null | undefined;
   fromApi: boolean;
 }
 
@@ -12,14 +12,30 @@ export const PokemonCard: FC<Props> = ({pokemon, fromApi}) => {
   const router = useRouter();
 
   if (!pokemon) {
-    return <span>Pokémon no encontrado la PokeApi</span>;
+    if (fromApi) {
+      return (
+        <div className="flex justify-center">
+          <span className="text-2xl italic font-bold text-yellow-500">
+            Pokemon no encontrado en la PokeApi
+          </span>
+        </div>
+      );
+    } else {
+      return (
+        <div className="flex justify-center">
+          <span className="text-2xl italic font-bold text-yellow-500">
+            Pokemon no encontrado en la base de datos
+          </span>
+        </div>
+      );
+    }
   }
 
   const {name, id, img} = pokemon;
 
   const onClick = () => {
-    if (fromApi) return router.push(`/name/${pokemon.name}`);
-    router.push(`/mypokedex/${pokemon.id}`);
+    if (fromApi) return router.push(`/pokeapi/name/${pokemon.name}`);
+    router.push(`/pokedex/name/${pokemon.name}`);
   };
 
   return (

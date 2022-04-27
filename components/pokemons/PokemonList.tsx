@@ -14,34 +14,30 @@ export const PokemonList: FC<Props> = ({keyword}) => {
   const [pokemonFromApi, setPokemonFromApi] = useState<SmallPokemon | null>(
     null,
   );
-  const [pokemonFromStorage, setPokemonFromStorage] = useState<SmallPokemon>();
+  const [pokemonFromStorage, setPokemonFromStorage] =
+    useState<SmallPokemon | null>();
 
   useEffect(() => {
-    if (keyword.length > 0) {
-      console.log(keyword);
-      getPokemonDetails(keyword.toLocaleLowerCase())
-        .then(setPokemonFromApi)
-        .catch((error) => {
-          setPokemonFromApi(null);
-        });
-    }
-  }, [keyword]);
-
-  useEffect(() => {
-    // const pokemons = JSON.parse(localStorage.getItem("pokemons") || "{}");
-    // const newPokemon = pokemons.find(
-    //   (pokemon) => pokemon.name === keyword.toLocaleLowerCase(),
-    // );
-    // setPokemonFromStorage(newPokemon);
+    getPokemonDetails(keyword.toLocaleLowerCase())
+      .then(setPokemonFromApi)
+      .catch((error) => {
+        setPokemonFromApi(null);
+      });
   }, [keyword]);
 
   useEffect(
     () =>
       onSnapshot(query(collection(db, "pokemons")), (snapshot) => {
         const pokemon = snapshot.docs
-          .find((doc) => doc.data().name === keyword)
+          .find(
+            (doc) =>
+              doc.data().name.toLocaleLowerCase() ===
+              keyword.toLocaleLowerCase(),
+          )
           ?.data();
-        setPokemonFromStorage(pokemon as SmallPokemon);
+
+        if (pokemon?.name) setPokemonFromStorage(pokemon as SmallPokemon);
+        else setPokemonFromStorage(null);
       }),
     [keyword],
   );
@@ -65,7 +61,7 @@ export const PokemonList: FC<Props> = ({keyword}) => {
           </span>
         </div>
         <div>
-          {pokemonFromStorage && (
+          {keyword.length > 0 && (
             <PokemonCard pokemon={pokemonFromStorage} fromApi={false} />
           )}
         </div>

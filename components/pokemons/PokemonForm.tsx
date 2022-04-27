@@ -4,6 +4,7 @@ import Image from "next/image";
 import {useRef, useState} from "react";
 import {useForm} from "react-hook-form";
 import {db, storage} from "../../firebase";
+import {useRouter} from "next/router";
 
 interface FormData {
   abilities: string[];
@@ -12,7 +13,6 @@ interface FormData {
   evolutions: string[];
   name: string;
   description: string;
-  img: string;
   weight: number;
 }
 
@@ -24,13 +24,14 @@ export const PokemonForm = () => {
 
   const fileInput = useRef<HTMLInputElement>(null);
 
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
     formState: {errors},
     getValues,
     setValue,
-    watch,
   } = useForm<FormData>({
     defaultValues: {
       abilities: [],
@@ -39,7 +40,6 @@ export const PokemonForm = () => {
       evolutions: [],
       name: "",
       description: "",
-      img: "",
       weight: 0,
     },
   });
@@ -117,14 +117,15 @@ export const PokemonForm = () => {
         });
       });
     }
-
     setLoading(false);
+
+    router.push("/");
   };
 
   return (
     <div className="flex flex-col w-full gap-4 md:flex-row">
       <div className="flex flex-col gap-12 justify-center bg-[#111111] rounded p-4">
-        <div className="relative flex items-center justify-center transition-all duration-1000 hover:-top-1">
+        <div className="relative flex items-center justify-center">
           <Image
             src={selectedFile.length > 0 ? selectedFile : "/placeholder.jpg"}
             alt="placeholder"
@@ -155,50 +156,96 @@ export const PokemonForm = () => {
         className="flex flex-col gap-3 flex-auto p-4 bg-[#111111] rounded"
         onSubmit={handleSubmit(onSubmit)}
       >
+        {/* Form Name */}
+
         <div className="text-sm">
           <span className="font-bold">Nombre:</span>
           <input
             type="text"
             className="w-full py-2 border-b-2 bg-[#111111] focus:outline-none focus:shadow-outline"
             autoComplete="off"
-            {...register("name")}
+            {...register("name", {
+              required: "El nombre es requerido",
+              minLength: {value: 2, message: "Mínimo 2 caracteres"},
+            })}
           />
+          {errors.name && (
+            <span className="text-red-600">{errors.name.message}</span>
+          )}
         </div>
-        <p className="text-sm">
+
+        {/* Form ID */}
+
+        <div className="text-sm">
           <span className="font-bold">Número de la Pokedéx:</span>
           <input
             type="number"
             className="w-full py-2 border-b-2 bg-[#111111] focus:outline-none focus:shadow-outline"
             autoComplete="off"
-            {...register("id")}
+            {...register("id", {
+              required: "El número es requerido",
+              minLength: {value: 0, message: "Mínimo de valor 0"},
+            })}
           />
-        </p>
+          {errors.id && (
+            <span className="text-red-600">{errors.id.message}</span>
+          )}
+        </div>
+
+        {/* Form Weight */}
+
         <div className="text-sm">
           <span className="font-bold">Peso(lb):</span>
           <input
             type="number"
             className="w-full py-2 border-b-2 bg-[#111111] focus:outline-none focus:shadow-outline"
             autoComplete="off"
-            {...register("weight")}
+            {...register("weight", {
+              required: "El peso es requerido",
+              minLength: {value: 0, message: "Mínimo de valor 0"},
+            })}
           />
+          {errors.weight && (
+            <span className="text-red-600">{errors.weight.message}</span>
+          )}
         </div>
+
+        {/* Form Height */}
+
         <div className="text-sm">
           <span className="font-bold">Altura(ft):</span>
           <input
             type="number"
             className="w-full py-2 border-b-2 bg-[#111111] focus:outline-none focus:shadow-outline"
             autoComplete="off"
-            {...register("height")}
+            {...register("height", {
+              required: "La altura es requerida",
+              minLength: {value: 0, message: "Mínimo de valor 0"},
+            })}
           />
+          {errors.height && (
+            <span className="text-red-600">{errors.height.message}</span>
+          )}
         </div>
+
+        {/* Form Description */}
+
         <div className="text-sm">
           <span className="font-bold">Descripción:</span>
           <textarea
             className="w-full py-2 border-b-2 bg-[#111111] focus:outline-none focus:shadow-outline"
             autoComplete="off"
-            {...register("description")}
+            {...register("description", {
+              required: "La descripción es requerida",
+              minLength: {value: 2, message: "Mínimo de valor 2"},
+            })}
           />
+          {errors.description && (
+            <span className="text-red-600">{errors.description.message}</span>
+          )}
         </div>
+
+        {/* Form Abilities */}
 
         <div className="flex flex-col gap-2">
           <div className="text-sm">
