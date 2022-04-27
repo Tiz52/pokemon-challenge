@@ -14,14 +14,14 @@ export const Navbar = () => {
       <div className="flex items-center justify-center">
         <Image src="/pokeball.png" alt="logo" width={36} height={24} />
         <Link href={"/"} passHref>
-          <a className="text-2xl font-semibold">Pokémon App</a>
+          <a className="text-sm font-semibold sm:text-2xl">Pokémon App</a>
         </Link>
       </div>
       <button
         className="inline-flex items-center justify-center p-0.5 overflow-hidden rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500"
         onClick={onClick}
       >
-        <span className="px-5 py-2.5 transition-all ease-in duration-75 dark:bg-gray-900 rounded-md group-hover:bg-opacity-0 hover:text-white">
+        <span className="sm:px-5 px-2  text-sm sm:text-base py-2  sm:py-2.5 transition-all ease-in duration-75 dark:bg-gray-900 rounded-md group-hover:bg-opacity-0 hover:text-white">
           agregar pokémon
         </span>
       </button>

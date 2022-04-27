@@ -5,6 +5,7 @@ import {useRef, useState} from "react";
 import {useForm} from "react-hook-form";
 import {db, storage} from "../../firebase";
 import {useRouter} from "next/router";
+import {pokemonStorage} from "../../utils";
 
 interface FormData {
   abilities: string[];
@@ -99,10 +100,6 @@ export const PokemonForm = () => {
   };
 
   const onSubmit = async (form: FormData) => {
-    // let pokemons = [];
-    // pokemons.push(form);
-    // localStorage.setItem("pokemons", JSON.stringify(pokemons));
-
     if (status === "pending") return;
 
     if (!selectedFile) {
@@ -119,6 +116,14 @@ export const PokemonForm = () => {
     if (selectedFile) {
       await uploadString(imageRef, selectedFile, "data_url").then(async () => {
         const imageUrl = await getDownloadURL(imageRef);
+
+        const newPokemonStorage = {
+          ...form,
+          img: imageUrl,
+        };
+
+        pokemonStorage.setPokemon(newPokemonStorage);
+
         await updateDoc(doc(db, "pokemons", docRef.id), {
           img: imageUrl,
         });
@@ -135,7 +140,7 @@ export const PokemonForm = () => {
       <div className="flex flex-col gap-12 justify-center bg-[#111111] rounded p-4">
         <div className="relative flex items-center justify-center">
           <Image
-            src={selectedFile.length > 0 ? selectedFile : "/placeholder.jpg"}
+            src={selectedFile.length > 0 ? selectedFile : "/who.png"}
             alt="placeholder"
             width={320}
             height={320}
@@ -160,18 +165,16 @@ export const PokemonForm = () => {
         </div>
       </div>
 
-      <form
-        className="flex flex-col gap-3 flex-auto p-4 bg-[#111111] rounded"
-        onSubmit={handleSubmit(onSubmit)}
-      >
+      <div className="flex flex-col  gap-3 flex-auto px-2 py-4 bg-[#111111] rounded">
         {/* Form Name */}
 
-        <div className="text-sm">
+        <div className="p-4 text-sm bg-black rounded">
           <span className="font-bold">Nombre:</span>
           <input
             type="text"
-            className="w-full py-2 border-b-2 bg-[#111111] focus:outline-none focus:shadow-outline"
+            className="w-full py-2 bg-black border-b-2 focus:outline-none focus:shadow-outline"
             autoComplete="off"
+            placeholder="Nombre"
             {...register("name", {
               required: "El nombre es requerido",
               minLength: {value: 2, message: "Mínimo 2 caracteres"},
@@ -184,11 +187,11 @@ export const PokemonForm = () => {
 
         {/* Form ID */}
 
-        <div className="text-sm">
+        <div className="p-4 text-sm bg-black rounded">
           <span className="font-bold">Número de la Pokedéx:</span>
           <input
             type="number"
-            className="w-full py-2 border-b-2 bg-[#111111] focus:outline-none focus:shadow-outline"
+            className="w-full py-2 bg-black border-b-2 focus:outline-none focus:shadow-outline"
             autoComplete="off"
             {...register("id", {
               required: "El número es requerido",
@@ -202,11 +205,11 @@ export const PokemonForm = () => {
 
         {/* Form Weight */}
 
-        <div className="text-sm">
+        <div className="p-4 text-sm bg-black rounded">
           <span className="font-bold">Peso(lb):</span>
           <input
             type="number"
-            className="w-full py-2 border-b-2 bg-[#111111] focus:outline-none focus:shadow-outline"
+            className="w-full py-2 bg-black border-b-2 focus:outline-none focus:shadow-outline"
             autoComplete="off"
             {...register("weight", {
               required: "El peso es requerido",
@@ -220,11 +223,11 @@ export const PokemonForm = () => {
 
         {/* Form Height */}
 
-        <div className="text-sm">
+        <div className="p-4 text-sm bg-black rounded">
           <span className="font-bold">Altura(ft):</span>
           <input
             type="number"
-            className="w-full py-2 border-b-2 bg-[#111111] focus:outline-none focus:shadow-outline"
+            className="w-full py-2 bg-black border-b-2 focus:outline-none focus:shadow-outline"
             autoComplete="off"
             {...register("height", {
               required: "La altura es requerida",
@@ -238,11 +241,12 @@ export const PokemonForm = () => {
 
         {/* Form Description */}
 
-        <div className="text-sm">
+        <div className="p-4 text-sm bg-black rounded">
           <span className="font-bold">Descripción:</span>
           <textarea
-            className="w-full py-2 border-b-2 bg-[#111111] focus:outline-none focus:shadow-outline"
+            className="w-full py-2 bg-black border-b-2 focus:outline-none focus:shadow-outline"
             autoComplete="off"
+            placeholder="Descripción"
             {...register("description", {
               required: "La descripción es requerida",
               minLength: {value: 2, message: "Mínimo de valor 2"},
@@ -255,26 +259,29 @@ export const PokemonForm = () => {
 
         {/* Form Abilities */}
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 p-4 bg-black rounded">
           <div className="text-sm">
             <span className="font-bold">
               Ingrese el nombre de una habilidad:
             </span>
             <input
               type="text"
-              className="w-full py-2 border-b-2 bg-[#111111] focus:outline-none focus:shadow-outline"
+              className="w-full py-2 bg-black border-b-2 focus:outline-none focus:shadow-outline"
               autoComplete="off"
               value={newAbilityValue}
+              placeholder="Ej: nombre de la habilidad"
               onChange={(e) => setNewAbilityValue(e.target.value)}
               onKeyUp={({code}) =>
-                code === "Space" ? onNewAbility() : undefined
+                code === "Enter" ? onNewAbility() : undefined
               }
             />
           </div>
 
-          <span className="text-xs">Presiona [spacebar] para agregar</span>
+          <span className="text-xs">
+            Presiona [enter] para agregar a la lista de habilidades
+          </span>
 
-          <div className="flex flex-col h-24 gap-2 text-sm">
+          <div className="flex flex-col h-20 gap-2 text-sm">
             <span className="font-bold">Habilidades:</span>
             <div className="flex gap-2">
               {getValues("abilities").map((ability, index) => (
@@ -294,7 +301,7 @@ export const PokemonForm = () => {
 
         {/* Form Evolution */}
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 p-4 bg-black rounded">
           <div className="text-sm">
             <span className="font-bold">
               Ingrese el nombre de una evolución:
@@ -304,16 +311,19 @@ export const PokemonForm = () => {
               className="w-full py-2 border-b-2 bg-[#111111] focus:outline-none focus:shadow-outline"
               autoComplete="off"
               value={newEvolutionValue}
+              placeholder="Ej: nombre de la evolución"
               onChange={(e) => setNewEvolutionValue(e.target.value)}
               onKeyUp={({code}) =>
-                code === "Space" ? onNewEvolution() : undefined
+                code === "Enter" ? onNewEvolution() : undefined
               }
             />
           </div>
 
-          <span className="text-xs">Presiona [spacebar] para agregar</span>
+          <span className="text-xs">
+            Presiona [enter] para agregar a la lista de evoluciones
+          </span>
 
-          <div className="flex flex-col h-24 gap-2 text-sm">
+          <div className="flex flex-col h-20 gap-2 text-sm">
             <span className="font-bold">Evoluciones:</span>
             <div className="flex gap-2">
               {getValues("evolutions").map((ability, index) => (
@@ -360,6 +370,7 @@ export const PokemonForm = () => {
             ${status !== "pending" ? "" : ""}
             disabled:opacity-50 disabled:cursor-not-allowed`}
             disabled={status === "pending"}
+            onClick={handleSubmit(onSubmit)}
           >
             <span
               className={`px-5 py-2.5 transition-all ease-in duration-75 dark:bg-gray-900 rounded-md ${
@@ -372,7 +383,7 @@ export const PokemonForm = () => {
             </span>
           </button>
         </div>
-      </form>
+      </div>
     </div>
   );
 };

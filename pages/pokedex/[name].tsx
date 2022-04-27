@@ -3,37 +3,17 @@ import {GetStaticProps, GetStaticPaths, NextPage} from "next";
 import {PokemonDetailFromDB} from "../../components/pokemons";
 
 import {baseUrl} from "../../services/settings";
-import {
-  PokemonFromDB,
-  PokemonListResponse,
-} from "../../interfaces/pokemon-list";
+import {PokemonListResponse} from "../../interfaces/pokemon-list";
 import {PageLayout} from "../../components/layout";
-import {useEffect, useState} from "react";
-import {collection, onSnapshot, query} from "firebase/firestore";
-import {db} from "../../firebase";
+
+import {usePokemonFromDB} from "../../hooks";
 
 interface Props {
   name: string;
 }
 
 const PokemonByName: NextPage<Props> = ({name}) => {
-  const [pokemonFromDB, setPokemonFromDB] = useState<PokemonFromDB>();
-
-  useEffect(
-    () =>
-      onSnapshot(query(collection(db, "pokemons")), (snapshot) => {
-        const pokemon = snapshot.docs
-          .find((doc) => {
-            return (
-              doc.data().name.toLocaleLowerCase() === name.toLocaleLowerCase()
-            );
-          })
-          ?.data();
-
-        if (pokemon?.name) setPokemonFromDB(pokemon as PokemonFromDB);
-      }),
-    [name],
-  );
+  const pokemonFromDB = usePokemonFromDB(name);
 
   return (
     <PageLayout title={"MyPokedex"}>

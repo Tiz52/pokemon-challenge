@@ -30,9 +30,12 @@ export const SearchPokemon: FC<Props> = ({handleKeyword}) => {
           placeholder="Escriba el nombre del Pókemon"
           name="pokemon"
           value={pokemon}
+          autoComplete="off"
           onChange={(e) => setPokemon(e.target.value)}
         />
-        <SearchIcon className="absolute w-5 h-5 right-1 top-2" />
+        <button className="hover:text-white hover:scale-105">
+          <SearchIcon className="absolute w-5 h-5 right-1 top-2" />
+        </button>
       </form>
     </div>
   );
