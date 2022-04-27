@@ -35,7 +35,7 @@ export const PokemonList: FC<Props> = ({keyword}) => {
         <div className="flex flex-col gap-4">
           <div className="flex justify-center">
             <span className="text-4xl italic font-bold text-yellow-500">
-              PokeApi
+              MyPokedex
             </span>
           </div>
           {keyword.length > 0 && (
