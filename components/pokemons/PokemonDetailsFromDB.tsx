@@ -84,7 +84,7 @@ export const PokemonDetailFromDB: FC<Props> = ({pokemon}) => {
         <p className="text-sm md:text-lg">
           <span className="font-bold">Descripción:</span> {pokemon.description}.
         </p>
-        <div className="flex justify-center">
+        <div className="flex justify-center my-4">
           <button
             className="inline-flex items-center justify-center p-0.5 overflow-hidden rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500"
             onClick={onToggleFavorites}
