@@ -132,7 +132,7 @@ export const PokemonForm = () => {
 
     setStatus("uploaded");
 
-    router.push("/");
+    router.push(`/pokedex/${form.name.toLocaleLowerCase()}`);
   };
 
   return (

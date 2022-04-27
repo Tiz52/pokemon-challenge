@@ -1,12 +1,49 @@
 import Image from "next/image";
-import {FC} from "react";
+import {FC, useState, useEffect} from "react";
 import {Pokemon} from "../../interfaces";
+import {pokemonStorage} from "../../utils";
+
+import confetti from "canvas-confetti";
 
 interface Props {
   pokemon: Pokemon;
 }
 
 export const PokemonDetails: FC<Props> = ({pokemon}) => {
+  const [isInFavorites, setIsInFavorites] = useState(false);
+
+  useEffect(() => {
+    const img =
+      pokemon.sprites.other?.dream_world?.front_default ||
+      pokemon.sprites.front_default;
+    const name = pokemon.name;
+
+    setIsInFavorites(pokemonStorage.existInFavorites(name, img));
+  }, [pokemon]);
+
+  const onToggleFavorites = () => {
+    const img =
+      pokemon.sprites.other?.dream_world?.front_default ||
+      pokemon.sprites.front_default;
+    const name = pokemon.name;
+
+    pokemonStorage.toggleFavorite(name, img);
+    setIsInFavorites(!isInFavorites);
+
+    if (isInFavorites) return;
+
+    confetti({
+      zIndex: 999,
+      particleCount: 100,
+      spread: 160,
+      angle: -100,
+      origin: {
+        x: 1,
+        y: 0,
+      },
+    });
+  };
+
   return (
     <div className="flex flex-col gap-4 md:flex-row">
       <div
@@ -55,7 +92,6 @@ export const PokemonDetails: FC<Props> = ({pokemon}) => {
           <p className="text-sm md:text-lg">
             <span className="font-bold">Shinys:</span>
           </p>
-          {}
           <div className="flex gap-4 p-4">
             <Image
               src={pokemon.sprites.front_shiny}
@@ -70,6 +106,16 @@ export const PokemonDetails: FC<Props> = ({pokemon}) => {
               height={64}
             />
           </div>
+        </div>
+        <div className="flex justify-center">
+          <button
+            className="inline-flex items-center justify-center p-0.5 overflow-hidden rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500"
+            onClick={onToggleFavorites}
+          >
+            <span className="px-5 py-2.5 transition-all ease-in duration-75 dark:bg-gray-900 rounded-md group-hover:bg-opacity-0 hover:text-white">
+              {isInFavorites ? "Quitar de favoritos" : "Agregar a favoritos"}
+            </span>
+          </button>
         </div>
       </div>
     </div>
