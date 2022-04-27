@@ -3,7 +3,7 @@ import {PokemonForm} from "../../components/pokemons";
 
 export const NewPokemonPage = () => {
   return (
-    <PageLayout>
+    <PageLayout title={"New Pokémon"}>
       <PokemonForm />
     </PageLayout>
   );
